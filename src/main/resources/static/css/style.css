@@ -1,0 +1,58 @@
+div, p, label, input, h1, h2, h3 {
+    font-family: "Microsoft YaHei UI", serif;
+}
+
+body {
+    background: floralwhite;
+}
+
+#caption {
+    text-align: center;
+    margin: 40px auto;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#bigDiv {
+    position: relative;
+    margin: 0 auto;
+}
+
+#questionBox {
+    margin: 0px auto;
+    height: 50px;
+    line-height: 50px;
+}
+
+#captchaBox {
+    width: 520px;
+    height: 370px;
+    padding: 10px;
+    margin-bottom: 80px;
+    border: 1px solid darkgray;
+    box-shadow: 4px 2px 3px 3px gray;
+}
+
+#tip {
+    font-size: 16px;
+    font-family: 'Microsoft YaHei Light', sans-serif;
+}
+
+#succp {
+    color: red;
+    margin: 10px auto;
+}
+
+#capImg {
+    cursor: pointer;
+    text-align: center;
+}
+
+#xxx, #yyy{
+    color: darkblue;
+    font-weight: lighter;
+}
+
+#iconDiv{
+    cursor: pointer;
+}

@@ -1,0 +1,212 @@
+body {
+    background: rgba(214, 220, 255, .8);
+}
+
+.box {
+    position: relative;
+    margin:auto;
+    display:block;
+    width: 800px;
+    height: 600px;
+    background: none;
+}
+
+
+.left {
+    position: absolute;
+    -webkit-clip-path: polygon(3% 30%, 9% 23%, 37% 30%, 42% 64%, 30% 66%, 11% 47%);
+    clip-path: polygon(3% 30%, 9% 23%, 37% 30%, 42% 64%, 30% 66%, 11% 47%);
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background: #9799c6;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.middle {
+    position: absolute;
+    -webkit-clip-path: polygon(89% 23%, 70% 13%, 37% 30%, 42% 64%, 50% 61%, 78% 27%);
+    clip-path: polygon(89% 23%, 70% 13%, 37% 30%, 42% 64%, 50% 61%, 78% 27%);
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background: #9799c6;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.tail {
+    position: absolute;
+    -webkit-clip-path: polygon(83% 19%, 87% 14%, 95% 12%, 91% 23%, 97% 32%, 90% 37%, 82% 27%);
+    clip-path: polygon(83% 19%, 87% 14%, 95% 12%, 91% 23%, 97% 32%, 90% 37%, 82% 27%);
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background: #384459;
+    z-index: 1;
+    transform-origin: left center;
+    animation: tail 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes tail {
+    0% {transform: rotate(-0.3deg)}
+    100% {transform: rotate(0.3deg)}
+}
+
+.belly {
+    position: absolute;
+    -webkit-clip-path: polygon(7% 41%, 35% 52%, 58% 42%, 77% 23%, 90% 21%, 58% 70%, 30% 75%);
+    clip-path: polygon(7% 41%, 35% 52%, 58% 42%, 77% 23%, 90% 21%, 58% 70%, 30% 75%);
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background: #FFF;
+    z-index: 2;
+}
+
+.belly {
+    position: absolute;
+    -webkit-clip-path: polygon(7% 41%, 35% 52%, 58% 42%, 77% 23%, 90% 21%, 58% 70%, 30% 75%);
+    clip-path: polygon(7% 41%, 35% 52%, 58% 42%, 77% 23%, 90% 21%, 58% 70%, 30% 75%);
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background: #FFF;
+    z-index: 2;
+}
+
+.eye {
+    position: absolute;
+    top: 40%;
+    left: 30%;
+    width: 5%;
+    height: 6%;
+    border-radius: 50%;
+    background: #292a2d;
+    z-index: 2;
+    animation: blink 3s ease-in-out infinite;
+}
+
+/* inspired by http://codepen.io/macvhustle/pen/rayWGq?editors=1100 */
+
+@keyframes blink {
+    0% {transform: scaleY(1)}
+    1% {transform: scaleY(0.1)}
+    2% {transform: scaleY(1)}
+    60% {transform: scaleY(1)}
+    61% {transform: scaleY(0.1)}
+    62% {transform: scaleY(1)}
+    100% {transform: scaleY(1)}
+}
+
+.fin1 {
+    position: absolute;
+    -webkit-clip-path: polygon(45% 53%, 41% 64%, 47% 77%, 58% 80%, 51% 69%);
+    clip-path: polygon(45% 53%, 41% 64%, 47% 77%, 58% 80%, 51% 69%);
+    top: -1%;
+    left: -10%;
+    width: 100%;
+    height: 100%;
+    background: #384459;
+    z-index: 2;
+    transform-origin: center top;
+    animation: fin 0.8s ease-in-out infinite alternate;
+}
+
+.fin2 {
+    position: absolute;
+    -webkit-clip-path: polygon(23% 60%, 20% 70%, 25% 86%, 28% 64%);
+    clip-path: polygon(23% 60%, 20% 70%, 25% 86%, 28% 64%);
+    top: -10%;
+    left: -5%;
+    width: 100%;
+    height: 100%;
+    background: #384459;
+    z-index: 0;
+    transform-origin: center top;
+    animation: fin 1s ease-in-out infinite alternate;
+}
+
+@keyframes fin {
+    0% {transform: rotate(-5deg)}
+    100% {transform: rotate(-3deg)}
+}
+
+.bubble1 {
+    position: absolute;
+    top: 10%;
+    left: 30%;
+    width: 8%;
+    height: 10%;
+    border-radius: 50%;
+    border: 4px solid #384459;
+    background: #384459;
+    opacity: 0.8;
+    z-index: 0;
+    animation: bubbles 3s ease-in infinite;
+    animation-delay: 0.8s;
+}
+
+.bubble2 {
+    position: absolute;
+    bottom: 25%;
+    right: 35%;
+    width: 6%;
+    height: 8%;
+    border-radius: 50%;
+    border: 4px solid  #384459;
+    background: #384459;
+    opacity: 0.5;
+    z-index: 2;
+    animation: bubbles 3s ease-in infinite;
+    animation-delay: 1s;
+}
+
+.bubble3 {
+    position: absolute;
+    top: 40%;
+    right: 20%;
+    width: 8%;
+    height: 10%;
+    border-radius: 50%;
+    border: 4px solid  #384459;
+    background: #384459;
+    opacity: 0.7;
+    z-index: 0;
+    animation: bubbles 3s ease-in infinite;
+    animation-delay: 1.3s;
+}
+
+.bubble4 {
+    position: absolute;
+    bottom: 40%;
+    left: 5%;
+    width: 3%;
+    height: 4%;
+    border-radius: 50%;
+    border: 4px solid  #384459;
+    background: #384459;
+    opacity: 0.9;
+    z-index: 2;
+    animation: bubbles 3s ease-in infinite;
+}
+
+@keyframes bubbles {
+    100% { transform: translateY(-300px) scale(0.5);
+        opacity: 0.3;
+        animation-timing-function: ease-in }
+}
+
+#tip{
+    font-size: 20px;
+    font-family: "Microsoft JhengHei UI Light", sans-serif;
+    width: 100%;
+    margin: 200px auto 0;
+    text-align: center;
+}

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Common Sense Rotate Captcha</title>
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="stylesheet" th:href="@{static/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{static/css/layer/skin/layer.css}"/>
+    <link rel="stylesheet" th:href="@{static/css/layer/skin/layer.ext.css}"/>
+    <link rel="stylesheet" th:href="@{static/css/layui/css/layui.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+    <!--外链jquery-->
+    <script src="/static/js/jquery.min.js" type="text/javascript"></script>
+    <script th:src="@{static/css/layui/layui.js}" type="text/javascript"></script>
+    <script th:src="@{static/css/layer/layer.js}" type="text/javascript"></script>
+    <script th:href="@{static/css/layer/extend/layer.ext.js}" type="text/javascript"></script>
+    <style>
+        div, p, h1, h2, h3, label {
+            padding: 0;
+            margin: 0;
+            font-family: "Microsoft YaHei UI", serif;
+        }
+
+        #topbox {
+            text-align: center;
+            margin: 40px auto 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        #caption {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            margin: 50px auto 0;
+        }
+
+        #question {
+            color: red;
+            font-size: 22px;
+            font-weight: normal;
+            font-family: "Microsoft YaHei UI", sans-serif;
+        }
+
+        #bigbox {
+            width: 468px;
+            height: 468px;
+            padding: 8px;
+            border: 1px solid darkgray;
+            border-collapse: collapse;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin: 50px auto 0;
+            /*box-shadow: 4px 2px 3px 3px gray;*/
+        }
+
+        .smallbox {
+            width: 150px;
+            height: 150px;
+            /*border: 1px solid black !important;*/
+            float: left;
+        }
+
+        #bigbox .smallbox .capimg {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            border: 1px solid dimgray;
+            border-collapse: collapse;
+        }
+
+        .capimg:hover {
+            opacity: 0.9;
+        }
+
+        #result, #totalcount{
+            text-align: center;
+            margin: 20px auto 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body onload="disableInfo()" oncontextmenu='return false' ondragstart='return false' onselectstart='return false'
+      onselect='document.selection.empty()' oncopy='document.selection.empty()' onbeforecopy='return false'>
+
+<p id="topbox">Common Sense Rotating Captcha</p>
+<div id="caption">
+    <label id="question" th:text="${question}">what is used for installing or removing screws</label>
+</div>
+
+<div id="bigbox" class="animated faster">
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p1}}" alt="1captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p2}}" alt="2captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p3}}" alt="3captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p4}}" alt="4captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p5}}" alt="5captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p6}}" alt="6captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p7}}" alt="7captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p8}}" alt="8captcha image"></div>
+    <div class="smallbox">
+        <img class="capimg" th:src="@{${p9}}" alt="9captcha image"></div>
+</div>
+
+<div style="width:800px; margin:20px auto;text-align:center;">
+    <label id="tip">请按照提示要求选出大图中正确的一幅小图片，旋转到正确位置后提交</label>
+</div>
+
+<div id="result"></div>
+<div id="totalcount"></div>
+
+<div style="text-align: center;margin: 0 auto">
+    <button class="btn btn-default btn-danger" id="subbut" onclick="submitanswer()">提&nbsp;&nbsp;&nbsp;交</button>
+    <a class="btn btn-default btn-success" href="" role="button" onclick="nextone()">换一张</a>
+</div>
+
+<input id="num_" hidden="hidden" th:value="${num_}">
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var pxh = [[${ansindex}]];//数组
+    var roteArr = [[${rotatelist}]];
+    var length = pxh.length;
+    // console.log(pxh.length);
+    // console.log(pxh);
+    // console.log(roteArr);
+    /*]]>*/
+
+    var time;
+    var time_ori;
+    var username;
+    var succflag = 1;
+    var arrAngle = [0, 90, 180, 270];
+    var map = new Map();
+    /***/
+    // var clickCount = 0;
+    /***/
+    map.set("0", 0);
+    map.set("90", 1);
+    map.set("180", 2);
+    map.set("270", 3);
+
+    var myanimates = new Array("bounce","pulse","rubberBand","shake","headShake","swing","tada","wobble","jello","bounceIn","bounceInDown","bounceInLeft","bounceInRight","bounceInUp"
+    ,"fadeIn","fadeInDown","fadeInDownBig	fadeInLeft"
+    ,"fadeInLeftBig","fadeInRight","fadeInRightBig","fadeInUp"
+    ,"fadeInUpBig","lightSpeedIn"
+    ,"rotateIn","rotateInDownLeft","rotateInDownRight","rotateInUpLeft"
+    ,"rotateInUpRight","jackInTheBox"
+    ,"rollIn","zoomIn","zoomInDown","zoomInLeft","zoomInRight","zoomInUp","slideInDown"
+    ,"slideInLeft","slideInRight","slideInUp"
+    ,"heartBeat");
+
+    // alert(myanimates.length);
+    /**
+     * 下一页，设置过渡加载动画
+     * 由于现在电脑的性能很高，即使20人同时使用此系统，
+     * 也不会出现加载很慢的情况，所以我设计的缓冲加载一般并不会有人看到(￣▽￣)~*
+     */
+    function nextone() {
+        var index = layer.load(3, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        setTimeout(function () {
+            layer.closeAll('loading');
+        }, 2000);
+        window.location.href = "inde";
+    }
+
+    function submitanswer() {
+
+        //在此记录计时结束时间，用户点击提交的时候即是识别终止的时间
+        var time_finl = new Date().getTime();
+        time = time_finl - time_ori; //ms
+
+        // 通过cookie获取当前用户测试验证码的次数
+        checkCookie();
+
+        for (var i =0;i<length;i++){
+            var number = parseInt(pxh[i]);
+            // console.log(number);
+            // console.log(roteArr[number]);
+            if (document.getElementsByClassName("capimg")[number].getAttribute("rote") !== roteArr[number]) {
+                layer.alert("验证码验证失败，请重新选择");
+                succflag = 0;
+                break;
+            }
+        }
+        if (succflag !== 0) {
+            $("#subbut").attr("disabled", true);
+            succflag = 1;
+            layer.msg("验证成功！", {icon: 1, time: 500});
+
+            //如果不为空(这是肯定的)
+            if (username != null && username !== "") {
+                //获取cookies中用户总点击次数
+                var temp = parseInt(getCookie2('num'));
+                //将此时的用户点击正确的次数加一
+                var temp2 = parseInt(getCookie2('succnum')) + 1;
+                //更新用户cookie，过期时间我一直设为了1天
+                setCookie('username', username, temp, temp2, 1);
+                //在图片下方提示用户信息
+                $("#totalcount").text('User: ' + username + "; CookiesTotalCount: " + getCookie2('num'));
+            }
+            //0.5秒后跳转
+            setTimeout(function () {
+                window.location.href = "inde";
+            }, 500);
+        }
+        submitData();
+    }
+
+    function submitData(){
+        var personalStr = getCookie2('num');
+        var data = "num_=" + $("#num_").val() + "&username=" + username + "&time=" + time + "&perNum=" + personalStr + "&succflag=" + succflag;
+
+        //ajax提交数据到后台controller处理
+        $.ajax({
+            type: "POST",
+            url: 'postData',
+            data: data,
+            async: false,
+            cache: false,
+            success: function (data) {
+                //
+            }
+        });
+    }
+
+
+    /**
+     * 禁用F12，但这也只是小伎俩，这并没有真正禁止
+     */
+    function disableInfo() {
+        document.onkeydown = function () {
+            var e = window.event || arguments[0];
+            //屏蔽F12
+            var keyCode = event.which || event.keyCode
+            if (keyCode === 123) {
+                return false;
+                //屏蔽Ctrl+Shift+I
+            } else if ((e.ctrlKey) && (e.shiftKey) && (keyCode === 73)) {
+                return false;
+                //屏蔽Shift+F10
+            } else if ((e.shiftKey) && (keyCode === 121)) {
+                return false;
+            }
+        };
+
+        //屏蔽右键单击
+        document.oncontextmenu = function () {
+            return false;
+        }
+    }
+
+    //每次加载时随机生成角度
+    $(function () {
+        //提交按钮能用啦
+        $("#subbut").attr("disabled", false);
+
+        var index = Math.floor(Math.random()*40);
+        $("#bigbox").addClass(myanimates[index]);
+
+        // console.log(myanimates[index]);
+
+        $(".capimg").each(
+            function (index, element) {
+                var ran, current;
+                var temp = Math.floor(Math.random() * 4);//0 1 2 3
+                for (var i=0;i<length;i++) {
+                    var number = parseInt(pxh[i]);
+                    if (index === number) {
+                        ran = Math.floor(Math.random() * 4);//0 1 2 3
+                        // console.log(roteArr[number] + ";" + map.get(roteArr[number]));
+                        while (ran == map.get(roteArr[number])) {
+                            // console.log(ran+"keep rotating");
+                            ran = Math.floor(Math.random() * 4);
+                        }
+                        break;
+                    }
+                    else {
+                        ran = temp;
+                    }
+                }
+
+                current = arrAngle[ran];
+
+                // switch (ran) {
+                //     case 0:
+                //         current = 0;
+                //         break;
+                //     case 1:
+                //         current = 90;
+                //         break;
+                //     case 2:
+                //         current = 180;
+                //         break;
+                //     case 3:
+                //         current = 270;
+                //         break;
+                // }
+                $(element).css('transform', 'rotate(' + current + 'deg)');
+                $(element).attr("rote", current) // 设置
+            }
+        );
+
+        var date = new Date();
+        time_ori = date.getTime();
+    });
+
+    $('.smallbox').click(function () {
+
+        check();
+        /***/
+        // clickCount++;
+        // if (clickCount > 10) {
+        // 	layer.msg("点击旋转次数过多，跳往下一张...", {icon: 1, time: 500});
+        // 	setTimeout(function () {
+        //         window.location.href = "inde";
+        //     }, 500);
+        // 	return;
+        // }
+        /***/
+        succflag = 1;
+
+        var rot = $(this).children("img").attr("rote");
+        // alert(rot);
+        rot1 = (parseInt(rot) + 90) % 360;
+        if (rot1 == 0) {
+            rot1 = 360;
+        }
+        if (rot1 == 360) {
+            $(this).children("img").attr("rote", 0);
+        } else {
+            $(this).children("img").attr("rote", rot1);
+        }
+        $(this).children("img").css('transform', 'rotate(' + rot1 + 'deg)');
+    });
+
+    function check() {
+        username = getCookie('username');
+        if (username != null && username !== "") {
+
+        } else {
+            username = prompt('Please enter your name:', "");
+            while (username == null || username === "") {
+                username = prompt('Please enter your name:', "")
+            }
+
+            setCookie('username', username, 0, 0, 1);
+            //用户第一次书写username的时间不算做识别验证码的时间
+            var date = new Date();
+            time_ori = date.getTime();
+        }
+    }
+
+    function checkCookie() {
+        var temp,temp2;
+        var totalcount = $("#totalcount");
+        username = getCookie('username');
+        if (username != null && username != "") {
+            temp = parseInt(getCookie2('num')) + 1;
+            temp2 = parseInt(getCookie2('succnum'));
+            setCookie('username', username, temp, temp2, 1);
+
+        } else {
+            username = prompt('Please enter your name:', "");
+            while (username == null || username === "") {
+                username = prompt('Please enter your name:', "")
+            }
+
+            setCookie('username', username, 0, 0, 1);
+            //用户第一次书写username的时间不算做识别验证码的时间
+            var date = new Date();
+            time_ori = date.getTime();
+        }
+        totalcount.text('User: ' + username + "; CookiesTotalCount: " + getCookie2('num'));
+    }
+
+    /**
+     * 下面这些函数都是为了设置cookie，从cookie中获取验证次数，
+     * 摘自luosainan师姐 - DndAndRotationCaptcha 的代码
+     * */
+
+    //逗号分隔
+    function getCookie(c_name) {
+        if (document.cookie.length > 0) {
+            var c_start = document.cookie.indexOf(c_name + "=")
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                var c_end = document.cookie.indexOf(",", c_start)
+                if (c_end == -1)
+                    c_end = document.cookie.length;
+                //解码
+                return unescape(document.cookie.substring(c_start, c_end))
+            }
+        }
+        return ""
+    }
+
+    //分号分割
+    function getCookie2(c_name) {
+        if (document.cookie.length > 0) {
+            var c_start = document.cookie.indexOf(c_name + "=")
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                var c_end = document.cookie.indexOf(";", c_start)
+                if (c_end == -1)
+                    c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start, c_end))
+            }
+        }
+        return ""
+    }
+
+    /**
+     * 设置浏览器cookie
+     * @param c_name 用户名
+     * @param value 用户填入的用户名的值
+     * @param num 该用户总点击次数
+     * @param succnum 该用户点击成功次数
+     * @param expiredays cookie过期时间
+     */
+    function setCookie(c_name, value, num, succnum, expiredays) {
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + expiredays);
+        //escape编码加密
+        document.cookie = c_name + "=" + escape(value) + ",num=" + escape(num) + ",succnum=" + succnum
+            + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString())
+    }
+
+</script>
+</body>
+</html>
